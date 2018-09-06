@@ -1,27 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : AbstractPlayerHandler
 {
-    [Header("Properties...")] //
-    public bool DevEndlessMoves;
-    public int MovesLeft;
-    public Text MovesLeftDisplay;
-
-    [Header("References")] //
-    public MovementHandler MovementHandler;
-    public DrawPathHandler DrawPathHandler;
-
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
-            if (MovesLeft > 0 || DevEndlessMoves)
+            if (Player.MovesLeft > 0 || Player.References.GameController.DevEndlessMoves)
                 DetectMove(Input.mousePosition);
             else
                 Debug.Log("No moves left");
 
-        if (MovesLeftDisplay)
-            MovesLeftDisplay.text = MovesLeft.ToString();
+        if (Player.References.MovesLeftLabel)
+            Player.References.MovesLeftLabel.text = Player.MovesLeft.ToString();
     }
 
     private void DetectMove(Vector3 mousePosition)
@@ -37,9 +28,12 @@ public class PlayerController : MonoBehaviour
 
     private void StartMove(Vector3 position)
     {
-        MovesLeft--;
         position.z = -0.01f;
-        DrawPathHandler.AddPoint(position);
-        MovementHandler.Move(position);
+
+        if (Player.MovementHandler.Move(position))
+        {
+            Player.MovesLeft--;
+            Player.DrawPathHandler.AddPoint(position);
+        }
     }
 }
