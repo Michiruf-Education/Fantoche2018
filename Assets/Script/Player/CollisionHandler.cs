@@ -32,6 +32,8 @@ public class CollisionHandler : AbstractPlayerHandler
             Player.CollectPointHandler.RemoveAndCount(other.transform.parent.gameObject);
         else if (layer == LayerMask.NameToLayer(Layer.Obstacle))
             Player.ObstacleHandler.OnCollision();
+        else if (layer == LayerMask.NameToLayer(Layer.Enemy))
+            Player.EnemyHandler.OnCollision();
         else if (layer == LayerMask.NameToLayer(Layer.Goal))
             Player.GoalHandler.OnCollision();
     }

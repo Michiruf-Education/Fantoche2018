@@ -12,15 +12,23 @@ public class Player : MonoBehaviour
     public float MinDistance = 0.1f;
     public float SpaceToObstacles = 0.01f;
 
+    [Header("Grid movement...")] //
+    public bool GridEnabled;
+    public float GridSize = 1f;
+
     // General
     public PlayerWorldReferences References { get; private set; }
     public BoxCollider2D Collider { get; private set; }
     public PlayerController Controller { get; private set; }
     // Movement
+    public LineRenderer MovementIndicator { get; private set; }
+    public MovementPositionCalculator MovementPositionCalculator { get; private set; }
+    public MovementIndicatorHandler MovementIndicatorHandler { get; private set; }
     public MovementHandler MovementHandler { get; private set; }
     // Collision
     public CollisionHandler CollisionHandler { get; private set; }
     public CollectPointHandler CollectPointHandler { get; private set; }
+    public EnemyHandler EnemyHandler { get; private set; }
     public GoalHandler GoalHandler { get; private set; }
     public ObstacleHandler ObstacleHandler { get; private set; }
     // Draw path
@@ -32,22 +40,28 @@ public class Player : MonoBehaviour
         Collider = GetComponentInChildren<BoxCollider2D>();
         Controller = gameObject.AddComponent<PlayerController>();
 
+        MovementIndicator = GetComponentInChildren<LineRenderer>();
+        MovementPositionCalculator = gameObject.AddComponent<MovementPositionCalculator>();
+        MovementIndicatorHandler = gameObject.AddComponent<MovementIndicatorHandler>();
         MovementHandler = gameObject.AddComponent<MovementHandler>();
 
         CollisionHandler = gameObject.AddComponent<CollisionHandler>();
         CollectPointHandler = gameObject.AddComponent<CollectPointHandler>();
+        EnemyHandler = gameObject.AddComponent<EnemyHandler>();
         GoalHandler = gameObject.AddComponent<GoalHandler>();
         ObstacleHandler = gameObject.AddComponent<ObstacleHandler>();
 
         DrawPathHandler = gameObject.AddComponent<DrawPathHandler>();
 
         // Assign the player
-        Controller.Player = this;
-        MovementHandler.Player = this;
-        CollisionHandler.Player = this;
-        CollectPointHandler.Player = this;
-        GoalHandler.Player = this;
-        ObstacleHandler.Player = this;
-        DrawPathHandler.Player = this;
+        foreach (var handler in GetComponentsInChildren<AbstractPlayerHandler>())
+        {
+            handler.Player = this;
+        }
+    }
+
+    public void Reset()
+    {
+        MovementHandler.ResetTargetPosition();
     }
 }

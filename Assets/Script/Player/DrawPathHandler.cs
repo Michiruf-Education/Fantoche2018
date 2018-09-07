@@ -4,7 +4,7 @@ using UnityEngine;
 // NOTE Not yet needed
 public class DrawPathHandler : AbstractPlayerHandler
 {
-    private readonly List<Vector3> _points = new List<Vector3>();
+    private readonly List<Vector2> _points = new List<Vector2>();
 
     void Update()
     {
@@ -19,7 +19,7 @@ public class DrawPathHandler : AbstractPlayerHandler
         }
     }
 
-    public void AddPoint(Vector3 position)
+    public void AddPoint(Vector2 position)
     {
         _points.Add(position);
     }
