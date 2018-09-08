@@ -10,27 +10,36 @@ public class PlayerController : AbstractPlayerHandler
 
     private void DetectInputs()
     {
-        var buttonDown = Input.GetMouseButtonDown(0);
+        var buttonDown = Input.GetMouseButton(0);
         var buttonUp = Input.GetMouseButtonUp(0);
+
+        // Disable the indicator before the movement detection
+        // (to just enable it in the case of mouse down)
+        Player.MovementIndicatorHandler.IndicatorEnabled = false;
 
         // Cancel early
         if (!buttonDown && !buttonUp)
             return;
 
         var worldPosition = Player.MovementPositionCalculator.CalculateWorldPosition(Input.mousePosition);
-        var movementPosition = Player.MovementPositionCalculator.CalculateMovementPosition(worldPosition);
-        if (!movementPosition.Valid)
+        if (!worldPosition.IsSet)
+            return;
+        var movementPosition = Player.MovementPositionCalculator.CalculateMovementPosition(worldPosition.Value);
+        if (!movementPosition.IsSet)
             return;
 
         if (buttonUp)
         {
-            Player.DrawPathHandler.AddPoint(movementPosition.Position);
-            Player.MovementHandler.Move(movementPosition.Position);
+            Player.DrawPathHandler.AddPoint(movementPosition.Value);
+            Player.MovementHandler.Move(movementPosition.Value);
             Player.MovesLeft--;
         }
         else
+        {
             // buttonDown is always true in else case
-            Player.MovementIndicatorHandler.DrawIndicator(movementPosition.Position);
+            Player.MovementIndicatorHandler.IndicatorEnabled = true;
+            Player.MovementIndicatorHandler.DrawIndicator(movementPosition.Value);
+        }
     }
 
     private void UpdateMovesLeftLabel()

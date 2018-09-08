@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(PlayerWorldReferences))]
 public class Player : MonoBehaviour
@@ -9,12 +10,26 @@ public class Player : MonoBehaviour
 
     [Header("Movement...")] //
     public float Speed = 1f;
+    public bool UseVariant2 = true;
+    [FormerlySerializedAs("Movement variant v2")]
+    public AnimationCurve MovementCurve;
+    public float AccelerationDistance;
+    public AnimationCurve AccelerationCurve;
+    public float DecelerationDistance;
+    public AnimationCurve DecelerationCurve;
     public float MinDistance = 0.1f;
-    public float SpaceToObstacles = 0.01f;
+    public float SpaceToObstacles = 0.1f;
+    public float IndicatorSpaceFromPlayerToArrowStart;
 
     [Header("Grid movement...")] //
     public bool GridEnabled;
     public float GridSize = 1f;
+
+    [Header("Sounds...")] //
+    public AudioClip CollectObjectSound;
+    public AudioClip HitEnemySound;
+    public AudioClip FinishLevelSound;
+    public AudioClip MoveSound;
 
     // General
     public PlayerWorldReferences References { get; private set; }
@@ -30,7 +45,6 @@ public class Player : MonoBehaviour
     public CollectPointHandler CollectPointHandler { get; private set; }
     public EnemyHandler EnemyHandler { get; private set; }
     public GoalHandler GoalHandler { get; private set; }
-    public ObstacleHandler ObstacleHandler { get; private set; }
     // Draw path
     public DrawPathHandler DrawPathHandler { get; private set; }
 
@@ -49,7 +63,6 @@ public class Player : MonoBehaviour
         CollectPointHandler = gameObject.AddComponent<CollectPointHandler>();
         EnemyHandler = gameObject.AddComponent<EnemyHandler>();
         GoalHandler = gameObject.AddComponent<GoalHandler>();
-        ObstacleHandler = gameObject.AddComponent<ObstacleHandler>();
 
         DrawPathHandler = gameObject.AddComponent<DrawPathHandler>();
 
@@ -62,6 +75,6 @@ public class Player : MonoBehaviour
 
     public void Reset()
     {
-        MovementHandler.ResetTargetPosition();
+        MovementHandler.StopMove();
     }
 }

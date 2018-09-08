@@ -13,9 +13,6 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        // TODO Remove
-        //DontDestroyOnLoad(this);
-
         if (DevInitLevel)
             StartCoroutine(StartDev());
     }
@@ -60,8 +57,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Level with LevelController and parent game object with name \"" + controllerName +
-                           "\" not found!");
+            Debug.LogError(
+                "Level with LevelController and parent game object with name \"" + controllerName + "\" not found!");
         }
     }
 
