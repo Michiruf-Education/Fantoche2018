@@ -4,7 +4,8 @@ public class PlayerController : AbstractPlayerHandler
 {
     void Update()
     {
-        DetectInputs();
+        if (Player.MovesLeft > 0 || Player.References.GameController.DevEndlessMoves)
+            DetectInputs();
         UpdateMovesLeftLabel();
     }
 

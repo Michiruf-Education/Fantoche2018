@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // NOTE Not yet needed
+[Obsolete]
 public class DrawPathHandler : AbstractPlayerHandler
 {
     private readonly List<Vector2> _points = new List<Vector2>();

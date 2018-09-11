@@ -10,13 +10,7 @@ public class Player : MonoBehaviour
 
     [Header("Movement...")] //
     public float Speed = 1f;
-    public bool UseVariant2 = true;
-    [FormerlySerializedAs("Movement variant v2")]
     public AnimationCurve MovementCurve;
-    public float AccelerationDistance;
-    public AnimationCurve AccelerationCurve;
-    public float DecelerationDistance;
-    public AnimationCurve DecelerationCurve;
     public float MinDistance = 0.1f;
     public float SpaceToObstacles = 0.1f;
     public float IndicatorSpaceFromPlayerToArrowStart;
@@ -31,9 +25,11 @@ public class Player : MonoBehaviour
     public AudioClip FinishLevelSound;
     public AudioClip MoveSound;
 
+    // Unity components
+    public BoxCollider2D Collider { get; private set; }
+    public AudioSource AudioSource { get; private set; }
     // General
     public PlayerWorldReferences References { get; private set; }
-    public BoxCollider2D Collider { get; private set; }
     public PlayerController Controller { get; private set; }
     // Movement
     public LineRenderer MovementIndicator { get; private set; }
@@ -50,8 +46,10 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        References = GetComponentInChildren<PlayerWorldReferences>();
         Collider = GetComponentInChildren<BoxCollider2D>();
+        AudioSource = GetComponentInChildren<AudioSource>();
+        
+        References = GetComponentInChildren<PlayerWorldReferences>();
         Controller = gameObject.AddComponent<PlayerController>();
 
         MovementIndicator = GetComponentInChildren<LineRenderer>();

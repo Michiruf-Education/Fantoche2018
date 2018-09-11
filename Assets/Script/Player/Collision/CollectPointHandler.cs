@@ -27,6 +27,6 @@ public class CollectPointHandler : AbstractPlayerHandler
         if (enter && _audioSource && Player.CollectObjectSound)
             _audioSource.PlayOneShot(Player.CollectObjectSound);
         Player.Points++;
-        Destroy(go);
+        go.SetActive(false);
     }
 }

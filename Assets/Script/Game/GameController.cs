@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -64,8 +65,23 @@ public class GameController : MonoBehaviour
 
     public void FinishGame(Player player)
     {
-        Debug.LogWarning("Finished level");
-        // TODO Finishing the game makes no sense, go to the next level
+        Debug.Log("Trying to finish the game (or level)");
+        // NOTE Level Controller stuff should not be here
+        
+        if (!_currentLevelController)
+            throw new ArgumentException("FinishGame :: Level controller not set");
+
+        Debug.Log("FinishGame :: points: " + player.Points + " required: " + _currentLevelController.RequiredPoints);
+        if (player.Points < _currentLevelController.RequiredPoints)
+        {
+            Debug.LogWarning("Player tried to finish the game with " + player.Points + " of " +
+                             _currentLevelController.RequiredPoints + " required");
+            return;
+        }
+
+        if (player.AudioSource && player.FinishLevelSound)
+            player.AudioSource.PlayOneShot(player.FinishLevelSound);
+
         StartNextLevel();
     }
 }

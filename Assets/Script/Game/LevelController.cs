@@ -23,6 +23,11 @@ public class LevelController : MonoBehaviour
     public void StartLevel()
     {
         Container.SetActive(true);
+        Container.transform.ApplyRecursivelyOnAllChildren(transform1 =>
+        {
+            Debug.Log(transform1.gameObject.name);
+            transform1.gameObject.SetActive(true);
+        });
         _player.MovesLeft = AvailableMoves;
         _player.Points = 0;
         _player.MovementHandler.MoveImmediately(StartPosition.position);

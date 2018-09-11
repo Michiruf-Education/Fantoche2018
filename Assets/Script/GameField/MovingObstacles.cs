@@ -12,7 +12,7 @@ public class MovingObstacles : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		float step = -speed * Time.deltaTime;
-		transform.Translate (0, step, 0);
+		float step = speed * Time.deltaTime;
+		transform.Translate (step, 0, 0);
 	}
 }

@@ -20,66 +20,41 @@ public class MovementHandler : AbstractPlayerHandler
     {
         Vector3 nextPosition;
 
-        if (Player.UseVariant2)
+        var distance = (_targetPosition - _lastPosition).magnitude;
+        var duration = distance / Player.Speed;
+        // Check avoids NaN-vectors, because division by zero
+        // ... and checks if we are still moving
+        if (Mathf.Abs(duration) > 0.1f)
         {
-            var distance = (_targetPosition - _lastPosition).magnitude;
-            var duration = distance / Player.Speed;
-            // Check avoids NaN-vectors, because division by zero
-            // ... and checks if we are still moving
-            if (Mathf.Abs(duration) > 0.001f)
+            var timePassed = Time.realtimeSinceStartup - _startTime;
+            var distancePercentage = Player.MovementCurve.Evaluate(timePassed / duration);
+            nextPosition = Vector3.Lerp(
+                _lastPosition,
+                _targetPosition,
+                distancePercentage);
+
+            // Play sound
+            Debug.Log("ApplyPosition :: Position not reached");
+            if (!Player.AudioSource.isPlaying && Player.MoveSound)
             {
-                var timePassed = Time.realtimeSinceStartup - _startTime;
-                var distancePercentage = Player.MovementCurve.Evaluate(timePassed / duration);
-                nextPosition = Vector3.Lerp(
-                    _lastPosition,
-                    _targetPosition,
-                    distancePercentage);
-                // TODO Play sound
-            }
-            else
-            {
-                nextPosition = _lastPosition;
+                Debug.Log("ApplyPosition :: Starting sound");
+                Player.AudioSource.clip = Player.MoveSound;
+                Player.AudioSource.Play();
             }
         }
         else
         {
-            // Variant 1 (works, but bad to configure)
-            var distanceToGo = (_targetPosition - _lastPosition).magnitude;
-            var distanceRemaining = (_targetPosition - Player.transform.position).magnitude;
-            var distanceRemainingFactor = 1f - distanceRemaining / Player.DecelerationDistance;
-            var distanceAlreadyGone = distanceToGo - distanceRemaining;
-            var distanceAlreadyGoneFactor = distanceAlreadyGone / Player.AccelerationDistance;
-            float currentSpeed;
-            if (distanceAlreadyGoneFactor < 1)
-            {
-                currentSpeed = Player.AccelerationCurve.Evaluate(distanceAlreadyGoneFactor) * Player.Speed;
-            }
-            else if (distanceRemainingFactor < 1)
-            {
-                currentSpeed = Player.DecelerationCurve.Evaluate(distanceRemainingFactor) * Player.Speed;
-            }
-            else
-            {
-                currentSpeed = Player.Speed;
-            }
-            nextPosition = Vector3.MoveTowards(
-                Player.transform.position,
-                _targetPosition,
-                currentSpeed * Time.deltaTime);
-            Debug.Log(
-                "distanceToGo " + distanceToGo + "\n" +
-                "distanceAlreadyGone " + distanceAlreadyGone + "\n" +
-                "distanceRemaining " + distanceRemaining + "\n" +
-                "currentSpeed " + currentSpeed + "\n" +
-                "nextPosition " + nextPosition
-            );
-        }
+            nextPosition = Player.transform.position;
 
-        // Calculate next position (Old lerp variant 1)
-        //var nextPosition = Vector3.Lerp(
-        //    Player.transform.position,
-        //    _targetPosition,
-        //    Player.Speed * Time.deltaTime);
+            // Stop sound
+            Debug.Log("ApplyPosition :: Position reached");
+            if (Player.AudioSource.isPlaying)
+            {
+                // TODO This is not working yet
+                Debug.Log("ApplyPosition :: Stopping sound");
+                Player.AudioSource.Stop();
+            }
+        }
 
         // Switch orientation
         var xDifference = nextPosition.x - Player.transform.position.x;
@@ -91,7 +66,7 @@ public class MovementHandler : AbstractPlayerHandler
                 visual.transform.localScale.y,
                 visual.transform.localScale.z);
         }
-        
+
         // Apply position
         Player.transform.position = nextPosition;
     }
